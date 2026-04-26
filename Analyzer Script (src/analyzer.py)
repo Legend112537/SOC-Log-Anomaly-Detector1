@@ -1,0 +1,66 @@
+cat > src/analyzer.py <<'EOF'
+import re
+import json
+from collections import defaultdict
+from datetime import datetime
+
+class SOCLogAnalyzer:
+    def __init__(self, log_file):
+        self.log_file = log_file
+        self.failed_attempts = defaultdict(list)
+
+    def parse_logs(self):
+        with open(self.log_file, 'r') as f:
+            for line in f:
+                if "Failed password" in line:
+                    ip_match = re.search(r'from (\d+\.\d+\.\d+\.\d+)', line)
+                    timestamp_match = re.search(r'^(\w+ \d+ \d+:\d+:\d+)', line)
+                    if ip_match and timestamp_match:
+                        ip = ip_match.group(1)
+                        timestamp = timestamp_match.group(1)
+                        self.failed_attempts[ip].append(timestamp)
+
+    def detect_anomalies(self, threshold=3):
+        anomalies = []
+        for ip, timestamps in self.failed_attempts.items():
+            if len(timestamps) >= threshold:
+                anomalies.append({
+                    "ip": ip,
+                    "failed_count": len(timestamps),
+                    "first_seen": timestamps[0],
+                    "last_seen": timestamps[-1],
+                    "severity": "HIGH" if len(timestamps) > 5 else "MEDIUM"
+                })
+        return anomalies
+
+    def generate_report(self, output_file):
+        anomalies = self.detect_anomalies()
+        report = {
+            "analysis_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "total_ips_scanned": len(self.failed_attempts),
+            "anomalies_detected": len(anomalies),
+            "details": anomalies
+        }
+        with open(output_file, 'w') as f:
+            json.dump(report, f, indent=4)
+
+        print(f"--- SOC Analysis Report ---")
+        print(f"Total IPs scanned: {report['total_ips_scanned']}")
+        print(f"Anomalies detected: {report['anomalies_detected']}")
+        for a in anomalies:
+            print(f"[{a['severity']}] Alert: IP {a['ip']} ({a['failed_count']} failures)")
+        print(f"\nReport saved to: {output_file}")
+        return report
+
+if __name__ == "__main__":
+    import os
+    log_path = "logs/auth.log"
+    report_path = "reports/analysis_report.json"
+
+    if not os.path.exists("reports"):
+        os.makedirs("reports")
+
+    analyzer = SOCLogAnalyzer(log_path)
+    analyzer.parse_logs()
+    analyzer.generate_report(report_path)
+EOF
