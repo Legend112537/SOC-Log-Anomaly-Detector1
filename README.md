@@ -1,25 +1,11 @@
 # SOC-Log-Anomaly-Detector1
-# 1. Create the folder and navigate into it
-mkdir soc-log-anomaly-detector
-cd soc-log-anomaly-detector
+cat > README.md <<'EOF'
+# 🛡️ SOC Log Anomaly Detector
 
-# 2. Create the sub‑folders
-mkdir src logs reports
+A Python‑based tool that simulates a SOC analyst’s core task: ingesting logs, detecting brute‑force patterns, and producing a concise report.
 
-# 3. (Optional) Create a .gitignore file so Git doesn’t track virtual‑envs, logs, etc.
-cat > .gitignore <<'EOF'
-# Byte‑code
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-
-# Logs
-logs/
-reports/
-
-# OS files
-.DS_Store
-Thumbs.db
-EOF
+## 🚀 Features
+- **Log Parsing** – Reads standard `auth.log`‑style SSH logs.
+- **Anomaly Detection** – Flags IPs with ≥3 failed login attempts.
+- **Severity Scoring** – MEDIUM or HIGH based on frequency.
+- **JSON Reporting** – Easy integration with SIEMs or other tooling.
