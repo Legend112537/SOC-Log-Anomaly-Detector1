@@ -1,0 +1,12 @@
+cat > logs/auth.log <<'EOF'
+Jan 10 10:01:01 server sshd[1234]: Failed password for admin from 192.168.1.50 port 22 ssh2
+Jan 10 10:01:05 server sshd[1234]: Failed password for admin from 192.168.1.50 port 22 ssh2
+Jan 10 10:01:10 server sshd[1234]: Failed password for admin from 192.168.1.50 port 22 ssh2
+Jan 10 10:01:15 server sshd[1234]: Accepted password for admin from 192.168.1.50 port 22 ssh2
+Jan 10 10:05:00 server sshd[1235]: Failed password for root from 10.0.0.99 port 22 ssh2
+Jan 10 10:05:02 server sshd[1235]: Failed password for root from 10.0.0.99 port 22 ssh2
+Jan 10 10:05:04 server sshd[1235]: Failed password for root from 10.0.0.99 port 22 ssh2
+Jan 10 10:05:06 server sshd[1235]: Failed password for root from 10.0.0.99 port 22 ssh2
+Jan 10 10:05:08 server sshd[1235]: Failed password for root from 10.0.0.99 port 22 ssh2
+Jan 10 10:10:00 server sshd[1236]: Accepted password for user1 from 172.16.0.5 port 22 ssh2
+EOF
